@@ -1,6 +1,6 @@
 import './App.css'
 import { useState } from 'react';
-import { Trash2, SquarePen, Plus} from "lucide-react";
+import { Trash2, SquarePen, Plus, Circle, CircleCheck} from "lucide-react";
 
 function App() {
   const [showInput, setShowInput] = useState(false);
@@ -10,6 +10,12 @@ function App() {
   const handleAdd = () => {
     setTodos([...todos, { text: todo, isCompleted: false }]);
     setTodo("");
+  }
+  
+  const handleComplete = (index) => {
+    const updatedTodos = [...todos];
+    updatedTodos[index].isCompleted = !updatedTodos[index].isCompleted;
+    setTodos(updatedTodos);
   }
   
   const handleEdit = () => {
@@ -56,8 +62,14 @@ function App() {
 
         <div id='task' className='bg-gray-200'>
           {todos.map((todo, index) => (
-            <div className='flex bg-white p-5 m-3 font-light text-xl justify-between items-center gap-3'>
-              <p key={index}>{todo.text}</p>
+            <div key={index} className='flex bg-white p-5 m-3 font-light text-xl justify-between items-center gap-3'>
+              <button onClick={()=>handleComplete(index)}>
+                {todo.isCompleted ? (
+                  <CircleCheck className="text-green-500" />
+                ) : (
+                  <Circle />
+                )}</button>
+              <p className={todo.isCompleted? "line-through":""}>{todo.text}</p>
               <div className='flex gap-5'>
                 <button onClick={handleEdit}>
                   <SquarePen />
