@@ -32,8 +32,8 @@ function App() {
     setEditIndex(index);
     setShowInput(true);
   }
-  const handleDelete = () => {
-
+  const handleDelete = (index) => {
+    setTodos(todos.filter((todo,i)=> i !==index));
   }
 
   return (
@@ -65,7 +65,7 @@ function App() {
                   setTodo(e.target.value);
                 }}
                 className='bg-gray-400 text-xl outline-none border-none p-3 rounded-xl font-bold' type="text" placeholder='Enter the task' id="" />
-              <button onClick={handleAdd} className='bg-blue-500 text-white p-3 font-bold rounded-xl'>
+              <button onClick={handleAdd} className='bg-blue-500 text-white p-3 font-bold rounded-xl cursor-pointer'>
                 {editIndex !== null ? "Save" : "Add"}
               </button>
             </div>
@@ -84,11 +84,11 @@ function App() {
                 )}</button>
               <p className={todo.isCompleted? "line-through":""}>{todo.text}</p>
               <div className='flex gap-5'>
-                <button onClick={()=>handleEdit(index)}>
+                <button onClick={()=>handleEdit(index)} className='cursor-pointer'>
                   <SquarePen />
                 </button>
 
-                <button onClick={handleDelete}>
+                <button onClick={()=>handleDelete(index)} className='cursor-pointer'>
                   <Trash2 />
                 </button>
               </div>
