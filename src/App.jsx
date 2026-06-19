@@ -6,9 +6,18 @@ function App() {
   const [showInput, setShowInput] = useState(false);
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
+  const [editIndex, setEditIndex] = useState(null);
 
   const handleAdd = () => {
-    setTodos([...todos, { text: todo, isCompleted: false }]);
+    if(editIndex != null){
+      const updatedTodos = [...todos];
+      updatedTodos[editIndex].text=todo;
+      setTodos(updatedTodos);
+      setEditIndex(null);
+    }
+    else{
+      setTodos([...todos, { text: todo, isCompleted: false }]);
+    }
     setTodo("");
   }
   
@@ -18,8 +27,10 @@ function App() {
     setTodos(updatedTodos);
   }
   
-  const handleEdit = () => {
-
+  const handleEdit = (index) => {
+    setTodo(todos[index].text);
+    setEditIndex(index);
+    setShowInput(true);
   }
   const handleDelete = () => {
 
@@ -54,7 +65,9 @@ function App() {
                   setTodo(e.target.value);
                 }}
                 className='bg-gray-400 text-xl outline-none border-none p-3 rounded-xl font-bold' type="text" placeholder='Enter the task' id="" />
-              <button onClick={handleAdd} className='bg-blue-500 text-white p-3 font-bold rounded-xl'>Add</button>
+              <button onClick={handleAdd} className='bg-blue-500 text-white p-3 font-bold rounded-xl'>
+                {editIndex !== null ? "Save" : "Add"}
+              </button>
             </div>
           )}
         </div>
@@ -71,7 +84,7 @@ function App() {
                 )}</button>
               <p className={todo.isCompleted? "line-through":""}>{todo.text}</p>
               <div className='flex gap-5'>
-                <button onClick={handleEdit}>
+                <button onClick={()=>handleEdit(index)}>
                   <SquarePen />
                 </button>
 
