@@ -1,46 +1,60 @@
 import './App.css'
 import { useState } from 'react';
-import { Trash2, SquarePen, Plus, Circle, CircleCheck} from "lucide-react";
+import { Trash2, SquarePen, Plus, Circle, CircleCheck, Sun, Moon } from "lucide-react";
 
 function App() {
   const [showInput, setShowInput] = useState(false);
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   const handleAdd = () => {
-    if(editIndex != null){
+    if (editIndex != null) {
       const updatedTodos = [...todos];
-      updatedTodos[editIndex].text=todo;
+      updatedTodos[editIndex].text = todo;
       setTodos(updatedTodos);
       setEditIndex(null);
     }
-    else{
+    else {
       setTodos([...todos, { text: todo, isCompleted: false }]);
     }
     setTodo("");
   }
-  
+
   const handleComplete = (index) => {
     const updatedTodos = [...todos];
     updatedTodos[index].isCompleted = !updatedTodos[index].isCompleted;
     setTodos(updatedTodos);
   }
-  
+
   const handleEdit = (index) => {
     setTodo(todos[index].text);
     setEditIndex(index);
     setShowInput(true);
   }
   const handleDelete = (index) => {
-    setTodos(todos.filter((todo,i)=> i !==index));
+    setTodos(todos.filter((todo, i) => i !== index));
   }
+
+  const toggleTheme = () => {
+    setDarkMode(darkMode => !darkMode);
+  }
+
 
   return (
 
     <>
-      <main className='flex flex-col justify-center items-center gap-10'>
-        <h1 className='text-5xl font-extrabold text-gray-600'>TODO LIST</h1>
+      <main className={`min-h-screen flex flex-col justify-center items-center gap-10 
+        ${darkMode? "bg-white" : "bg-black"}
+        `}>
+        <div className='flex justify-between'>
+
+          <h1 className='text-5xl font-extrabold text-gray-600'>TODO LIST</h1>
+          <button onClick={()=>toggleTheme()}>
+            {darkMode? <Moon />: <Sun className='text-white' />  } 
+          </button>
+        </div>
 
 
         <div className='flex gap-40'>
@@ -75,20 +89,22 @@ function App() {
 
         <div id='task' className='bg-gray-200'>
           {todos.map((todo, index) => (
-            <div key={index} className='flex bg-white p-5 m-3 font-light text-xl justify-between items-center gap-3'>
-              <button onClick={()=>handleComplete(index)}>
+            <div key={index} className={`flex  p-5 m-3 font-light text-xl justify-between items-center gap-3
+              ${darkMode? "bg-white text-black" : "bg-black text-white" }
+            `}>
+              <button onClick={() => handleComplete(index)}>
                 {todo.isCompleted ? (
                   <CircleCheck className="text-green-500" />
                 ) : (
                   <Circle />
                 )}</button>
-              <p className={todo.isCompleted? "line-through":""}>{todo.text}</p>
+              <p className={todo.isCompleted ? "line-through" : ""}>{todo.text}</p>
               <div className='flex gap-5'>
-                <button onClick={()=>handleEdit(index)} className='cursor-pointer'>
+                <button onClick={() => handleEdit(index)} className='cursor-pointer'>
                   <SquarePen />
                 </button>
 
-                <button onClick={()=>handleDelete(index)} className='cursor-pointer'>
+                <button onClick={() => handleDelete(index)} className='cursor-pointer'>
                   <Trash2 />
                 </button>
               </div>
