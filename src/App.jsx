@@ -8,6 +8,7 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [filter, setFilter] = useState("All");
 
   const handleAdd = () => {
     if (editIndex != null) {
@@ -41,6 +42,12 @@ function App() {
     setDarkMode(darkMode => !darkMode);
   }
 
+  const filterTasks = todos.filter((todo)=>{
+    if(filter === "Completed") return todo.isCompleted;
+    if(filter === "Pending") return !todo.isCompleted;
+    return true;
+  })
+    
 
   return (
 
@@ -48,29 +55,34 @@ function App() {
       <main className={`min-h-screen flex flex-col justify-center items-center gap-10 
         ${darkMode? "bg-white" : "bg-black"}
         `}>
-        <div className='flex justify-between'>
+      <section className='border-2 border-gray-500 p-5 min-w-5xl'>
 
+        <div className='flex items-center justify-center'>
           <h1 className='text-5xl font-extrabold text-gray-600'>TODO LIST</h1>
-          <button onClick={()=>toggleTheme()}>
+          <button 
+          onClick={()=>toggleTheme()}
+          className='border border-gray-500 p-1 rounded-xl'
+          >
             {darkMode? <Moon />: <Sun className='text-white' />  } 
           </button>
         </div>
 
 
-        <div className='flex gap-40'>
+        <div className='flex justify-between'>
           <button
             onClick={() => setShowInput(true)}
             className='bg-blue-500 text-white p-3 text-xl font-bold rounded-xl flex justify-center items-center gap-2'
             id='add-task'
-          >Add task<Plus /></button>
-          <select name="" id="task-progress" className='bg-gray-400 outline-0 p-3 text-xl rounded-xl font-bold'>
-            <option value="">All</option>
-            <option value="">Completed</option>
+            >Add task<Plus /></button>
+          <select value={filter} onChange={(e)=>setFilter(e.target.value)} id="task-progress" className='bg-gray-400 outline-0 p-3 text-xl rounded-xl font-bold'>
+            <option value="All">All</option>
+            <option value="Completed">Completed</option>
+            <option value="Pending">Pending</option>
           </select>
         </div>
 
 
-        <div id='enter-task'>
+        <div id='enter-task' className='flex justify-center items-center'>
           {showInput && (
             <div className='flex gap-5'>
               <input
@@ -87,11 +99,11 @@ function App() {
         </div>
 
 
-        <div id='task' className='bg-gray-200'>
-          {todos.map((todo, index) => (
+        <div id='task' className={`${darkMode? "bg-gray-400" : "bg-gray-200" }`}>
+          {filterTasks.map((todo, index) => (
             <div key={index} className={`flex  p-5 m-3 font-light text-xl justify-between items-center gap-3
-              ${darkMode? "bg-white text-black" : "bg-black text-white" }
-            `}>
+              ${darkMode? "bg-gray-200 text-black" : "bg-gray-700 text-white" }
+              `}>
               <button onClick={() => handleComplete(index)}>
                 {todo.isCompleted ? (
                   <CircleCheck className="text-green-500" />
@@ -110,9 +122,10 @@ function App() {
               </div>
             </div>
           ))
-          }
+        }
 
         </div>
+        </section>
       </main>
     </>
   )
