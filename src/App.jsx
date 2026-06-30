@@ -1,13 +1,23 @@
 import './App.css'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Trash2, SquarePen, Plus, Circle, CircleCheck, Sun, Moon } from "lucide-react";
 
 function App() {
   const [showInput, setShowInput] = useState(false);
   const [todo, setTodo] = useState("");
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(()=>{
+    const savedTodos = localStorage.getItem("todos");
+
+    return savedTodos ? JSON.parse(savedTodos) : [];
+      
+  });
   const [editIndex, setEditIndex] = useState(null);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(()=>{
+    const savedTheme = localStorage.getItem("theme")
+
+    return savedTheme ? JSON.parse(savedTheme) : false;
+  
+  });
   const [filter, setFilter] = useState("All");
 
   const handleAdd = () => {
@@ -47,7 +57,19 @@ function App() {
     if(filter === "Pending") return !todo.isCompleted;
     return true;
   })
+
+  useEffect(() => {
+     console.log("Saving todos:", todos);
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos])
+
+
+
+  useEffect(() => {
+    localStorage.setItem("theme", JSON.stringify(darkMode));
     
+  }, [darkMode])
+  
 
   return (
 
