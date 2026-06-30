@@ -75,19 +75,23 @@ function App() {
 
     <>
       <main className={`min-h-screen flex flex-col justify-center items-center gap-10 
-        ${darkMode? "bg-white" : "bg-black"}
+        ${darkMode? "bg-black" : "bg-white"}
         `}>
-      <section className='border-2 border-gray-500 p-5 min-w-5xl'>
+      <section className={`relative rounded-2xl border p-15 min-w-5xl flex flex-col gap-5 
+        ${darkMode? "bg-zinc-900 border border-zinc-800 shadow-[0_8px_30px_rgba(0,0,0,0.45),0_20px_60px_rgba(0,0,0,0.35)]" : "border-gray-200 shadow-[0_2px_8px_rgba(0,0,0,0.04),0_12px_30px_rgba(0,0,0,0.06),0_30px_60px_rgba(0,0,0,0.04)]"}
+           `}>
 
-        <div className='flex items-center justify-center'>
-          <h1 className='text-5xl font-extrabold text-gray-600'>TODO LIST</h1>
+          <h1 className={`text-5xl font-extrabold text-center
+            ${darkMode? "text-gray-200" : "text-gray-700"}
+            `}>TASK MANAGER</h1>
+
           <button 
           onClick={()=>toggleTheme()}
-          className='border border-gray-500 p-1 rounded-xl'
+          className='border border-gray-500 p-1 rounded-xl absolute top-5 right-5'
           >
-            {darkMode? <Moon />: <Sun className='text-white' />  } 
+            {darkMode? <Sun  className='text-white' /> : <Moon/> } 
           </button>
-        </div>
+
 
 
         <div className='flex justify-between'>
@@ -96,7 +100,7 @@ function App() {
             className='bg-blue-500 text-white p-3 text-xl font-bold rounded-xl flex justify-center items-center gap-2'
             id='add-task'
             >Add task<Plus /></button>
-          <select value={filter} onChange={(e)=>setFilter(e.target.value)} id="task-progress" className='bg-gray-400 outline-0 p-3 text-xl rounded-xl font-bold'>
+          <select value={filter} onChange={(e)=>setFilter(e.target.value)} id="task-progress" className={`${darkMode ? "bg-zinc-700 text-gray-300" : "bg-gray-200 text-gray-800"} outline-0 p-3 text-xl rounded-xl font-bold`}>
             <option value="All">All</option>
             <option value="Completed">Completed</option>
             <option value="Pending">Pending</option>
@@ -112,7 +116,7 @@ function App() {
                 onChange={(e) => {
                   setTodo(e.target.value);
                 }}
-                className='bg-gray-400 text-xl outline-none border-none p-3 rounded-xl font-bold' type="text" placeholder='Enter the task' id="" />
+                className={`text-xl outline-none border-none p-3 rounded-xl font-bold ${darkMode ? "bg-zinc-700 text-white" : "bg-gray-200 text-black"}`} type="text" placeholder='Enter the task' id="" />
               <button onClick={handleAdd} className='bg-blue-500 text-white p-3 font-bold rounded-xl cursor-pointer'>
                 {editIndex !== null ? "Save" : "Add"}
               </button>
@@ -121,10 +125,14 @@ function App() {
         </div>
 
 
-        <div id='task' className={`${darkMode? "bg-gray-400" : "bg-gray-200" }`}>
-          {filterTasks.map((todo, index) => (
-            <div key={index} className={`flex  p-5 m-3 font-light text-xl justify-between items-center gap-3
-              ${darkMode? "bg-gray-200 text-black" : "bg-gray-700 text-white" }
+        <div id='task' className={`h-[420px] overflow-y-auto p-0.5 ${darkMode? "bg-zinc-700 dark-scroll" : "bg-gray-200 light-scroll" }`}>
+          {todos.length === 0 ? (
+          <div className="flex h-full items-center justify-center text-zinc-500 font-bold">
+      No tasks yet
+    </div>) : (
+          filterTasks.map((todo, index) => (
+            <div key={index} className={`flex p-5 m-3 font-light text-xl justify-between items-center gap-3
+              ${darkMode? "bg-zinc-900 text-white" : "bg-white text-black" }
               `}>
               <button onClick={() => handleComplete(index)}>
                 {todo.isCompleted ? (
@@ -139,12 +147,12 @@ function App() {
                 </button>
 
                 <button onClick={() => handleDelete(index)} className='cursor-pointer'>
-                  <Trash2 />
+                  <Trash2 className='text-red-500'/>
                 </button>
               </div>
             </div>
           ))
-        }
+      )}
 
         </div>
         </section>

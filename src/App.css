@@ -1,0 +1,40 @@
+/* Common */
+#task {
+  scrollbar-width: thin;
+}
+
+#task::-webkit-scrollbar {
+  width: 8px;
+}
+
+#task::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Dark */
+#task.dark-scroll {
+  scrollbar-color: #52525b transparent;
+}
+
+#task.dark-scroll::-webkit-scrollbar-thumb {
+  background: #52525b;
+  border-radius: 9999px;
+}
+
+#task.dark-scroll::-webkit-scrollbar-thumb:hover {
+  background: #71717a;
+}
+
+/* Light */
+#task.light-scroll {
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+#task.light-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+#task.light-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

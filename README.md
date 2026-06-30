@@ -20,6 +20,11 @@ A modern and responsive Task Manager application built with **React**, **Vite**,
 * Lucide React
 * JavaScript (ES6+)
 
+## Screenshot
+![Light Mode](image1.png)
+![Dark Mode](image2.png)
+
+
 ## Installation
 
 ### Clone the repository
@@ -59,6 +64,8 @@ task-manager-app/
 │
 ├── public/
 │   └── favicon.svg
+│   └── image1.png
+│   └── image2.png
 │
 ├── src/
 │   ├── App.jsx
