@@ -77,11 +77,11 @@ function App() {
       <main className={`min-h-screen flex flex-col justify-center items-center gap-10 
         ${darkMode? "bg-black" : "bg-white"}
         `}>
-      <section className={`relative rounded-2xl border p-15 min-w-5xl flex flex-col gap-5 
+      <section className={`relative rounded-2xl border p-15 min-w-[250px] sm:min-w-[620px] lg:min-w-5xl flex flex-col gap-5
         ${darkMode? "bg-zinc-900 border border-zinc-800 shadow-[0_8px_30px_rgba(0,0,0,0.45),0_20px_60px_rgba(0,0,0,0.35)]" : "border-gray-200 shadow-[0_2px_8px_rgba(0,0,0,0.04),0_12px_30px_rgba(0,0,0,0.06),0_30px_60px_rgba(0,0,0,0.04)]"}
            `}>
 
-          <h1 className={`text-5xl font-extrabold text-center
+          <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold text-center
             ${darkMode? "text-gray-200" : "text-gray-700"}
             `}>TASK MANAGER</h1>
 
@@ -94,13 +94,13 @@ function App() {
 
 
 
-        <div className='flex justify-between'>
+        <div className='flex flex-col items-center sm:flex-row gap-5 sm:justify-between'>
           <button
             onClick={() => setShowInput(true)}
-            className='bg-blue-500 text-white p-3 text-xl font-bold rounded-xl flex justify-center items-center gap-2'
+            className='bg-blue-500 text-white p-2 sm:p-3 text-sm sm:text-xl font-bold rounded-xl flex justify-center items-center gap-2'
             id='add-task'
             >Add task<Plus /></button>
-          <select value={filter} onChange={(e)=>setFilter(e.target.value)} id="task-progress" className={`${darkMode ? "bg-zinc-700 text-gray-300" : "bg-gray-200 text-gray-800"} outline-0 p-3 text-xl rounded-xl font-bold`}>
+          <select value={filter} onChange={(e)=>setFilter(e.target.value)} id="task-progress" className={`${darkMode ? "bg-zinc-700 text-gray-300" : "bg-gray-200 text-gray-800"} outline-0 p-3 font-bold rounded-xl sm:font-bold hidden sm:block`}>
             <option value="All">All</option>
             <option value="Completed">Completed</option>
             <option value="Pending">Pending</option>
@@ -110,28 +110,37 @@ function App() {
 
         <div id='enter-task' className='flex justify-center items-center'>
           {showInput && (
-            <div className='flex gap-5'>
+            <div className='flex flex-col gap-2 sm:gap-5 sm:flex-row'>
               <input
                 value={todo}
                 onChange={(e) => {
                   setTodo(e.target.value);
                 }}
-                className={`text-xl outline-none border-none p-3 rounded-xl font-bold ${darkMode ? "bg-zinc-700 text-white" : "bg-gray-200 text-black"}`} type="text" placeholder='Enter the task' id="" />
-              <button onClick={handleAdd} className='bg-blue-500 text-white p-3 font-bold rounded-xl cursor-pointer'>
+                className={`p-3 text-sm sm:text-xl outline-none border-none rounded-xl font-bold ${darkMode ? "bg-zinc-700 text-white" : "bg-gray-200 text-black"}`} type="text" placeholder='Enter the task' id="" />
+              <button onClick={handleAdd} className='bg-blue-500 text-white p-2 sm:p-3 text-sm sm:text-xl font-bold rounded-xl cursor-pointer'>
                 {editIndex !== null ? "Save" : "Add"}
               </button>
             </div>
           )}
         </div>
+        <div className='flex justify-end sm:hidden'> 
+
+          {/* Mobile Selection */}
+        <select value={filter} onChange={(e)=>setFilter(e.target.value)} id="task-progress" className={`${darkMode ? "bg-zinc-700 text-gray-300" : "bg-gray-200 text-gray-800"} outline-0 p-2 sm:p-3 text-sm sm:text-xl rounded-xl font-bold`}>
+            <option value="All">All</option>
+            <option value="Completed">Completed</option>
+            <option value="Pending">Pending</option>
+          </select>
+        </div>
 
 
-        <div id='task' className={`h-[420px] overflow-y-auto p-0.5 ${darkMode? "bg-zinc-700 dark-scroll" : "bg-gray-200 light-scroll" }`}>
+        <div id='task' className={`h-[420px] w-auto overflow-y-auto p-0.5 ${darkMode? "bg-zinc-700 dark-scroll" : "bg-gray-200 light-scroll" }`}>
           {todos.length === 0 ? (
           <div className="flex h-full items-center justify-center text-zinc-500 font-bold">
       No tasks yet
     </div>) : (
           filterTasks.map((todo, index) => (
-            <div key={index} className={`flex p-5 m-3 font-light text-xl justify-between items-center gap-3
+            <div key={index} className={`overflow-hidden flex p-5 m-3 font-light text-xm sm:text-xl justify-between items-center gap-3
               ${darkMode? "bg-zinc-900 text-white" : "bg-white text-black" }
               `}>
               <button onClick={() => handleComplete(index)}>
@@ -140,7 +149,7 @@ function App() {
                 ) : (
                   <Circle />
                 )}</button>
-              <p className={todo.isCompleted ? "line-through" : ""}>{todo.text}</p>
+              <p className={todo.isCompleted ? "line-through overflow-auto w-10 sm:w-auto" : "overflow-auto w-10 sm:w-auto"}>{todo.text}</p>
               <div className='flex gap-5'>
                 <button onClick={() => handleEdit(index)} className='cursor-pointer'>
                   <SquarePen />
