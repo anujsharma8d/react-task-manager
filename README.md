@@ -21,8 +21,8 @@ A modern and responsive Task Manager application built with **React**, **Vite**,
 * JavaScript (ES6+)
 
 ## Screenshot
-![Light Mode](image1.png)
-![Dark Mode](image2.png)
+![Task Manager Light Mode](client/src/assets/image1.png)
+![Task Manager Dark Mode](client/src/assets/image2.png)
 
 
 ## Installation
