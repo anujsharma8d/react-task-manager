@@ -17,6 +17,9 @@ const Login = () => {
 
         try{
             const res = await axios.post(`${baseUrl}/api/auth/login`,{name,password})
+
+            localStorage.setItem("token",res.data.token)
+
             alert(res.data.message)
             setName("")
             setPassword("")

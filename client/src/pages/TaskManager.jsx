@@ -1,16 +1,19 @@
 import '../index.css'
 import { useState, useEffect } from 'react';
 import { Trash2, SquarePen, Plus, Circle, CircleCheck, Sun, Moon } from "lucide-react";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const TaskManager = () => {
+    const navigate = useNavigate();
+
+    const baseUrl = import.meta.env.VITE_API_URL
+
+    const isLoggedIn = !!localStorage.getItem("token");
+
     const [showInput, setShowInput] = useState(false);
     const [todo, setTodo] = useState("");
-    const [todos, setTodos] = useState(() => {
-        const savedTodos = localStorage.getItem("todos");
-
-        return savedTodos ? JSON.parse(savedTodos) : [];
-
-    });
+    const [todos, setTodos] = useState([]);
     const [editIndex, setEditIndex] = useState(null);
     const [darkMode, setDarkMode] = useState(() => {
         const savedTheme = localStorage.getItem("theme")
@@ -20,7 +23,11 @@ const TaskManager = () => {
     });
     const [filter, setFilter] = useState("All");
 
-    const handleAdd = () => {
+    const handleAdd = async () => {
+        if (!todo.trim()) return;
+
+        const token = localStorage.getItem("token")
+
         if (editIndex != null) {
             const updatedTodos = [...todos];
             updatedTodos[editIndex].text = todo;
@@ -28,10 +35,25 @@ const TaskManager = () => {
             setEditIndex(null);
         }
         else {
+
             setTodos([...todos, { text: todo, isCompleted: false }]);
+
+            if (token) {
+                try {
+                    await axios.post(`${baseUrl}/api/tasks/add`, { title: todo }, { headers: { Authorization: `Bearer ${token}` } })
+                } catch (err) {
+                    console.log(err)
+                }
+            }
         }
         setTodo("");
     }
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        setTodos([])
+        navigate("/login");
+    };
 
     const handleComplete = (index) => {
         const updatedTodos = [...todos];
@@ -59,9 +81,28 @@ const TaskManager = () => {
     })
 
     useEffect(() => {
-        console.log("Saving todos:", todos);
-        localStorage.setItem("todos", JSON.stringify(todos));
-    }, [todos])
+        const fetchTasks = async () => {
+            const token = localStorage.getItem("token")
+            if (!token) return;
+
+            try {
+                const res = await axios.get(`${baseUrl}/api/tasks`, { headers: { Authorization: `Bearer ${token}` } })
+                const tasks = res.data.map(task => ({
+                    _id: task._id,
+                    text: task.title,
+                    isCompleted: task.completed
+                }))
+
+                setTodos(tasks)
+            } catch (err) {
+                console.log(err)
+            }
+
+        }
+
+        fetchTasks()
+
+    }, [])
 
 
 
@@ -87,10 +128,36 @@ const TaskManager = () => {
 
                     <button
                         onClick={() => toggleTheme()}
-                        className='border border-gray-500 p-1 rounded-xl absolute top-5 right-5'
+                        className='border border-gray-500 p-1 rounded-xl absolute top-5 left-5'
                     >
                         {darkMode ? <Sun className='text-white' /> : <Moon />}
                     </button>
+                    {!isLoggedIn ?
+                        <div>
+                            <button
+                                onClick={() => navigate("/login")}
+                                className='bg-blue-500 text-white p-2 sm:p-3 text-sm lg:text-xl font-bold rounded-xl cursor-pointer absolute top-5 right-26 lg:right-40 '
+                            >
+                                Login
+                            </button>
+                            <button
+                                onClick={() => navigate("/signup")}
+                                className='bg-blue-500 text-white p-2 sm:p-3 text-sm lg:text-xl font-bold rounded-xl cursor-pointer absolute top-5 right-5'
+                            >
+                                Sign Up
+                            </button>
+                        </div>
+
+                        :
+
+                        <button
+                            onClick={handleLogout}
+                            className='bg-blue-500 text-white p-2 sm:p-3 text-sm lg:text-xl font-bold rounded-xl cursor-pointer absolute top-5 right-5'
+                        >
+                            Logout
+                        </button>
+
+                    }
 
 
 
@@ -140,7 +207,7 @@ const TaskManager = () => {
                                 No tasks yet
                             </div>) : (
                             filterTasks.map((todo, index) => (
-                                <div key={index} className={`overflow-hidden flex p-5 m-3 font-light text-xm sm:text-xl justify-between items-center gap-3
+                                <div key={todo._id || index} className={`overflow-hidden flex p-5 m-3 font-light text-xm sm:text-xl justify-between items-center gap-3
               ${darkMode ? "bg-zinc-900 text-white" : "bg-white text-black"}
               `}>
                                     <button onClick={() => handleComplete(index)}>
