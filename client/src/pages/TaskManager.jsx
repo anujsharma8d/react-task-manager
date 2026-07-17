@@ -196,7 +196,7 @@ const TaskManager = () => {
 
                     <button
                         onClick={() => toggleTheme()}
-                        className='border border-gray-500 p-1 rounded-xl absolute top-5 left-5'
+                        className='absolute top-5 left-5'
                     >
                         {darkMode ? <Sun className='text-white' /> : <Moon />}
                     </button>
@@ -226,8 +226,6 @@ const TaskManager = () => {
                         </button>
 
                     }
-
-
 
                     <div className='flex flex-col items-center sm:flex-row gap-5 sm:justify-between'>
                         <button
@@ -299,6 +297,11 @@ const TaskManager = () => {
                         )}
 
                     </div>
+                    {isLoggedIn?
+                    <p></p>
+                    :
+                    <p className='text-center text-red-500 font-bold'>Login to save your tasks</p>
+                }
                 </section>
             </main>
         </>
