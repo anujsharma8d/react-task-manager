@@ -28,19 +28,52 @@ const TaskManager = () => {
 
         const token = localStorage.getItem("token")
 
-        if (editIndex != null) {
-            const updatedTodos = [...todos];
-            updatedTodos[editIndex].text = todo;
-            setTodos(updatedTodos);
+        if (!token) {
+            if (editIndex !== null) {
+                setTodos(todos.map(task =>
+                    task._id === editIndex
+                        ? { ...task, text: todo }
+                        : task
+                ))
+                setEditIndex(null);
+            }
+            else {
+                setTodos([
+                    ...todos, { _id: Date.now().toString(), text: todo, isCompleted: false }
+                ])
+            }
+
             setEditIndex(null);
+            setTodo("")
+            return
+        }
+
+        if (editIndex !== null) {
+
+            try {
+                const res = await axios.put(`${baseUrl}/api/tasks/${editIndex}`, { title: todo }, { headers: { Authorization: `Bearer ${token}` } })
+
+                setTodos(todos.map(task =>
+                    task._id === editIndex
+                        ? { ...task, text: res.data.title }
+                        : task
+                ))
+
+                setEditIndex(null);
+                setTodo("");
+                return;
+
+            } catch (err) {
+                console.log(err)
+            }
+
         }
         else {
 
-            setTodos([...todos, { text: todo, isCompleted: false }]);
-
             if (token) {
                 try {
-                    await axios.post(`${baseUrl}/api/tasks/add`, { title: todo }, { headers: { Authorization: `Bearer ${token}` } })
+                    const res = await axios.post(`${baseUrl}/api/tasks/add`, { title: todo }, { headers: { Authorization: `Bearer ${token}` } })
+                    setTodos([...todos, { _id: res.data._id, text: res.data.title, isCompleted: res.data.completed }]);
                 } catch (err) {
                     console.log(err)
                 }
@@ -55,19 +88,54 @@ const TaskManager = () => {
         navigate("/login");
     };
 
-    const handleComplete = (index) => {
-        const updatedTodos = [...todos];
-        updatedTodos[index].isCompleted = !updatedTodos[index].isCompleted;
-        setTodos(updatedTodos);
+    const handleComplete = async (id) => {
+        const token = localStorage.getItem("token")
+
+        if (!token) {
+            setTodos(todos.map(task =>
+                task._id === id
+                    ? { ...task, isCompleted: !task.isCompleted }
+                    : task
+            ))
+            return
+        }
+
+        try {
+            const res = await axios.patch(`${baseUrl}/api/tasks/${id}`, {}, { headers: { Authorization: `Bearer ${token}` } })
+
+            setTodos(todos.map(task =>
+                task._id === id
+                    ? { ...task, isCompleted: res.data.completed }
+                    : task
+            ))
+        } catch (err) {
+            console.log(err)
+        }
+
     }
 
-    const handleEdit = (index) => {
-        setTodo(todos[index].text);
-        setEditIndex(index);
+    const handleEdit = (todo) => {
+        setTodo(todo.text);
+        setEditIndex(todo._id);
         setShowInput(true);
     }
-    const handleDelete = (index) => {
-        setTodos(todos.filter((todo, i) => i !== index));
+    const handleDelete = async (id) => {
+        const token = localStorage.getItem("token")
+
+        if (!token) {
+            setTodos(todos.filter(task => task._id !== id));
+            return;
+        }
+
+        try {
+            await axios.delete(`${baseUrl}/api/tasks/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+
+            setTodos(todos.filter(todo => todo._id !== id));
+
+        } catch (err) {
+            console.log(err);
+        }
+
     }
 
     const toggleTheme = () => {
@@ -210,7 +278,7 @@ const TaskManager = () => {
                                 <div key={todo._id || index} className={`overflow-hidden flex p-5 m-3 font-light text-xm sm:text-xl justify-between items-center gap-3
               ${darkMode ? "bg-zinc-900 text-white" : "bg-white text-black"}
               `}>
-                                    <button onClick={() => handleComplete(index)}>
+                                    <button onClick={() => handleComplete(todo._id)}>
                                         {todo.isCompleted ? (
                                             <CircleCheck className="text-green-500" />
                                         ) : (
@@ -218,11 +286,11 @@ const TaskManager = () => {
                                         )}</button>
                                     <p className={todo.isCompleted ? "line-through overflow-auto w-10 sm:w-auto" : "overflow-auto w-10 sm:w-auto"}>{todo.text}</p>
                                     <div className='flex gap-5'>
-                                        <button onClick={() => handleEdit(index)} className='cursor-pointer'>
+                                        <button onClick={() => handleEdit(todo)} className='cursor-pointer'>
                                             <SquarePen />
                                         </button>
 
-                                        <button onClick={() => handleDelete(index)} className='cursor-pointer'>
+                                        <button onClick={() => handleDelete(todo._id)} className='cursor-pointer'>
                                             <Trash2 className='text-red-500' />
                                         </button>
                                     </div>
