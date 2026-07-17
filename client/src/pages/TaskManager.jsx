@@ -190,7 +190,7 @@ const TaskManager = () => {
         ${darkMode ? "bg-zinc-900 border border-zinc-800 shadow-[0_8px_30px_rgba(0,0,0,0.45),0_20px_60px_rgba(0,0,0,0.35)]" : "border-gray-200 shadow-[0_2px_8px_rgba(0,0,0,0.04),0_12px_30px_rgba(0,0,0,0.06),0_30px_60px_rgba(0,0,0,0.04)]"}
            `}>
 
-                    <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold text-center
+                    <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold text-center pt-5
             ${darkMode ? "text-gray-200" : "text-gray-700"}
             `}>TASK MANAGER</h1>
 
@@ -232,7 +232,7 @@ const TaskManager = () => {
                             onClick={() => setShowInput(true)}
                             className='bg-blue-500 text-white p-2 sm:p-3 text-sm sm:text-xl font-bold rounded-xl flex justify-center items-center gap-2'
                             id='add-task'
-                        >Add task<Plus /></button>
+                        >Add task<Plus className='w-4 sm:w-10 '/></button>
                         <select value={filter} onChange={(e) => setFilter(e.target.value)} id="task-progress" className={`${darkMode ? "bg-zinc-700 text-gray-300" : "bg-gray-200 text-gray-800"} outline-0 p-3 font-bold rounded-xl sm:font-bold hidden sm:block`}>
                             <option value="All">All</option>
                             <option value="Completed">Completed</option>
@@ -273,23 +273,23 @@ const TaskManager = () => {
                                 No tasks yet
                             </div>) : (
                             filterTasks.map((todo, index) => (
-                                <div key={todo._id || index} className={`overflow-hidden flex p-5 m-3 font-light text-xm sm:text-xl justify-between items-center gap-3
+                                <div key={todo._id || index} className={`overflow-hidden flex p-2 sm:p-5 m-3 font-light text-xm sm:text-xl justify-between items-center gap-3
               ${darkMode ? "bg-zinc-900 text-white" : "bg-white text-black"}
               `}>
                                     <button onClick={() => handleComplete(todo._id)}>
                                         {todo.isCompleted ? (
-                                            <CircleCheck className="text-green-500" />
+                                            <CircleCheck className="text-green-500 w-4 sm:w-10 " />
                                         ) : (
-                                            <Circle />
+                                            <Circle className='w-4 sm:w-10 '/>
                                         )}</button>
-                                    <p className={todo.isCompleted ? "line-through overflow-auto w-10 sm:w-auto" : "overflow-auto w-10 sm:w-auto"}>{todo.text}</p>
+                                    <p className={todo.isCompleted ? "line-through overflow-auto w-20 sm:w-auto" : "overflow-auto w-20 sm:w-auto"}>{todo.text}</p>
                                     <div className='flex gap-5'>
                                         <button onClick={() => handleEdit(todo)} className='cursor-pointer'>
-                                            <SquarePen />
+                                            <SquarePen className='w-4 sm:w-10 '/>
                                         </button>
 
                                         <button onClick={() => handleDelete(todo._id)} className='cursor-pointer'>
-                                            <Trash2 className='text-red-500' />
+                                            <Trash2 className='text-red-500 w-4 sm:w-10 ' />
                                         </button>
                                     </div>
                                 </div>
